@@ -9,9 +9,8 @@ export default {
   name: 'App',
 }
 </script>
-
-<style>
-html,body{
+<style lang="scss">
+body,html{
   width: 100%;
   height: 100%;
 }
@@ -23,6 +22,7 @@ html,body{
   height: 100%;
   background: #f1f1f1;
   min-width: 1200px;
+  overflow: hidden;
 }
 .clear:after{
   content: '';

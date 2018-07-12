@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Main from '@/components/main'
 
 import PostDemand from '@/components/post-demand'
+import DemandRecord from '@/components/demand-record'
 Vue.use(Router)
 
 export default new Router({
@@ -16,6 +17,11 @@ export default new Router({
           path: '/main/postdemand',
           name: 'PostDemand',
           component: PostDemand
+        },
+        {
+          path: '/main/demandrecord',
+          name: 'DemandRecord',
+          component: DemandRecord
         }
       ]
     },

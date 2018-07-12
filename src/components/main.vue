@@ -37,6 +37,7 @@ export default {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  position: relative;
   .side-menu{
     box-sizing: border-box;
     position: absolute;
@@ -52,8 +53,11 @@ export default {
     box-sizing: border-box;
     width: 100%;
     height: 100%;
+    box-sizing: border-box;
     padding-left: 270px;
     padding-right: 30px;
+    padding-bottom: 80px;
+    overflow: scroll;
     .el-breadcrumb{
       line-height: 40px;
       font-size: 12px;
