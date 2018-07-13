@@ -22,26 +22,51 @@
          <el-button type="primary">搜索</el-button>
       </div>
       <div class="order-table">
-        <el-table :data="tableData2" style="width: 100%" :row-class-name="tableRowClassName">
-        <el-table-column prop="date" label="提交时间" width="180"></el-table-column>
-        <el-table-column prop="order" label="订单号" width="180"></el-table-column>
-        <el-table-column  label="订单总金额" width="340px">
+        <el-table :data="tableData2" style="width: 100%" row-class-name="tableRowClassName">
+        <el-table-column prop="date" label="提交时间"></el-table-column>
+        <el-table-column prop="order" label="订单号"></el-table-column>
+        <el-table-column  label="订单总金额" width="310px">
           <div slot-scope="scope">
               <p style="color: #e02828;font-size: 14px" >￥{{scope.row.ordermoney}}</p>
               <div class="detail" style="font-size: 14px">(发放金额：￥10000.00；服务费：￥7500.00)</div>
           </div>
         </el-table-column>
-        <el-table-column prop="serve" label="服务内容" width="180"></el-table-column>
-        <el-table-column prop="enddata" label="期望完成时间" width="180"></el-table-column>
-        <el-table-column prop="status" label="状态"></el-table-column>
+        <el-table-column prop="serve" label="服务内容" ></el-table-column>
+        <el-table-column prop="enddata" label="期望完成时间" ></el-table-column>
+        <el-table-column label="状态">
+           <div slot-scope="scope">
+             <!--<div>需求已提交</div>-->
+             <!--<div>待付款</div>-->
+             <!--<div>审核中</div>-->
+             <!--<div>服务中</div>-->
+             <div><p style="color: #e02828">审核未通过</p><p style="color: #999999">请重新上传凭证</p></div>
+           </div>
+        </el-table-column>
         <el-table-column prop="contractid" label="合同编号" ></el-table-column>
-        <el-table-column prop="date" label="操作" width="180"></el-table-column>
+        <el-table-column label="操作" >
+          <div class="upload" slot-scope="scope">
+            <el-upload class="upload" action="https://jsonplaceholder.typicode.com/posts">
+               <div class="upimge"><button>上传付款凭证</button></div>
+            </el-upload>
+
+             <!--<div class="delorder"><button @click="deleteOrder">删除</button></div>-->
+             <!--<div class="upimge"><button>上传付款凭证</button></div>-->
+             <!--<div class="confirm"><button>确认验收</button></div>-->
+             <!--<div class="lookimg" @click="showimg"><button>查看付款凭证</button></div>-->
+          </div>
+        </el-table-column>
       </el-table>
       </div>
       <div class="page ">
         <el-pagination  background layout="prev, pager, next, total, jumper" :total="1000" ></el-pagination>
       </div>
     </div>
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
+      <span>这是一段信息</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -74,12 +99,30 @@ export default {
           enddata: '2018-07-28',
           status: '需求已提交',
           contractid: 'HC12345657',
-        } ]
+        } ],
+      dialogVisible: false
     }
   },
   methods: {
-    tableRowClassName() {
-
+    deleteOrder() {
+      this.$confirm('此操作将删除该订单, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+    },
+    showimg() {
+      this.dialogVisible = true
     }
   }
 }
@@ -157,6 +200,7 @@ export default {
       }
     }
    .order-table{
+     padding: 0 18px;
      thead{
        tr{
          th{
@@ -169,10 +213,58 @@ export default {
          }
       }
      }
+     .tableRowClassName {
+       text-align: center;
+     }
+     button{
+       outline:none;
+       cursor:pointer;
+     }
+     .delorder{
+       button{
+         border:1px solid #e02828;
+         color: #e02828;
+         background-color: #fff;
+         width: 68px;
+         font-size: 14px;
+         line-height: 30px;
+       }
+     }
+     .upimge{
+       button{
+         border:none;
+         background-color: #418bfa;
+         font-size: 14px;
+         color: #fff;
+         line-height: 32px;
+         width: 110px;
+       }
+     }
+     .lookimg{
+       button{
+         border: none;
+        background-color: transparent;
+         font-size: 14px;
+         color: #418bfa;
+         line-height: 32px;
+         width: 110px;
+       }
+     }
+      .confirm{
+       button{
+         border:none;
+         background-color: #418bfa;
+         font-size: 14px;
+         color: #fff;
+         line-height: 32px;
+         width: 110px;
+       }
+     }
     }
     .page{
       float: right;
       padding: 28px 0;
+      padding-right: 18px;
     }
   }
 }

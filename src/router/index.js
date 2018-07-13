@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Main from '@/components/main'
-
+import Login from '@/components/login'
 import PostDemand from '@/components/post-demand'
 import DemandRecord from '@/components/demand-record'
 Vue.use(Router)
@@ -25,5 +25,10 @@ export default new Router({
         }
       ]
     },
+     {
+      path: '/login',
+      name: 'Login',
+      component: Login
+     }
   ]
 })

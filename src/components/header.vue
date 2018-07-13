@@ -12,7 +12,7 @@
          @select="handleSelect"
         active-text-color="#ffffff">
         <el-menu-item index="1">需求中心</el-menu-item>
-        <el-menu-item index="2" >商户中心</el-menu-item>
+        <el-menu-item index="2" >企业中心</el-menu-item>
       </el-menu>
     </div>
     <div class="username">
@@ -22,9 +22,8 @@
         中欣安泰集团<i class="el-icon-caret-bottom el-icon--right"></i>
       </span>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item>黄金糕</el-dropdown-item>
-        <el-dropdown-item>狮子头</el-dropdown-item>
-        <el-dropdown-item>蚵仔煎</el-dropdown-item>
+        <el-dropdown-item>修改密码</el-dropdown-item>
+        <el-dropdown-item>退出登录</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
     </div>
@@ -59,6 +58,9 @@ export default {
   }
   .header-nav{
     float: left;
+    .is-active{
+      background-color: rgb(54, 131, 200);
+    }
     .el-menu--horizontal .el-menu-item{
       height: 80px;
       line-height: 79px;
