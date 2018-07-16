@@ -114,6 +114,16 @@
       onSubmit() {
         return
       }
+    },
+    created() {
+      this.$axios.post(
+        'http://10.10.18.38:8080/merType/tree',
+        this.$qs.stringify({})
+      ).then(res => {
+        console.log(res)
+      }).catch(error => {
+          console.log(error)
+      })
     }
   }
 </script>

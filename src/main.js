@@ -39,9 +39,9 @@ HTTP_request.interceptors.response.use(
   error => {
     if(error.response){
       sessionStorage.clear();
-      router.replace({
-        path:'./505'
-      });
+      // router.replace({
+      //   path:'./505'
+      // });
     }
     return promise.reject(error.response.data)
   })

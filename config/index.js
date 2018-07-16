@@ -10,7 +10,26 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+       "/merType": {
+         type: 'proxy',
+         target: 'http://10.10.18.38:8088/',
+         // target: 'http://10.10.18.87:8081/',
+         // headers : {
+         //   'X-Real-IP' : '127.0.0.1:8080'
+         // },
+         changeOrigin: true,
+       },
+       "/cloud-api": {
+        type: 'proxy',
+          // target: 'http://10.10.18.38:8088/',
+          target: 'http://10.10.18.17:8081/',
+          // headers : {
+          //   'X-Real-IP' : '127.0.0.1:8080'
+          // },
+          changeOrigin: true,
+        },
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
