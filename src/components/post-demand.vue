@@ -15,57 +15,18 @@
       </div>
       <p class="input-title">选择服务内容</p>
       <div class="from-radio">
-        <div class="from-checkbox clear">
-          <div class="radio-title">商业销售:</div>
-          <div class="checkbox-item">
-            <el-form-item prop="type">
-              <el-checkbox-group>
-                <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-                <el-checkbox label="地推活动" name="type"></el-checkbox>
-                <el-checkbox label="线下主题活动" name="type"></el-checkbox>
-                <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
-                <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-                <el-checkbox label="地推活动" name="type"></el-checkbox>
-                <el-checkbox label="线下主题活动" name="type"></el-checkbox>
-                <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
-                <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-                <el-checkbox label="地推活动" name="type"></el-checkbox>
-                <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-              </el-checkbox-group>
-            </el-form-item>
+        <div class="radiobox" v-for='typeitem in typedata'>
+          <div class="from-checkbox clear" :class=" typeitem.id == submitfrom.alltype? 'isnow':''">
+            <div class="radio-title">{{typeitem.name}}:</div>
+            <div class="checkbox-item">
+              <el-form-item prop="type">
+                <el-checkbox-group v-model="submitfrom.type" @change="changeType(typeitem.id)">
+                  <el-checkbox v-for="select in typeitem.data " :label="select.cid" name="type">{{select.name}}</el-checkbox>
+                </el-checkbox-group>
+              </el-form-item>
+            </div>
           </div>
-        </div>
-        <div class="line-box"><p class="line"></p></div>
-        <div class="from-checkbox clear">
-          <div class="radio-title">商业销售:</div>
-          <div class="checkbox-item">
-            <el-form-item prop="type">
-              <el-checkbox-group>
-                <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-                <el-checkbox label="地推活动" name="type"></el-checkbox>
-                <el-checkbox label="线下主题活动" name="type"></el-checkbox>
-                <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
-                <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-                <el-checkbox label="地推活动" name="type"></el-checkbox>
-              </el-checkbox-group>
-            </el-form-item>
-          </div>
-        </div>
-        <div class="line-box"><p class="line"></p></div>
-        <div class="from-checkbox clear">
-          <div class="radio-title">商业销售:</div>
-          <div class="checkbox-item">
-            <el-form-item prop="type">
-              <el-checkbox-group>
-                <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-                <el-checkbox label="地推活动" name="type"></el-checkbox>
-                <el-checkbox label="线下主题活动" name="type"></el-checkbox>
-                <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
-                <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-                <el-checkbox label="地推活动" name="type"></el-checkbox>
-              </el-checkbox-group>
-            </el-form-item>
-          </div>
+          <div class="line-box"><p class="line"></p></div>
         </div>
       </div>
        <p class="input-title">期望完成时间</p>
@@ -106,24 +67,62 @@
     name: 'PostDemand',
     data() {
       return {
+        submitfrom : {
+          alltype: '',
+          type: []
+        },
         money: '',
-        data: ''
+        
+        data: '',
+        typedata: [
+          {id: 1 ,name: '大声道', data :[
+            {cid:11,name:'地推活动'},
+            {cid:12,name:'美食/餐厅线上活动1'},
+            {cid:13,name:'线下主题活动2'},
+            {cid:14,name:'的手法第三方'},
+            {cid:15,name:'噢噢噢噢'}
+          ]},
+          {id: 2 ,name: '请问请问', data :[
+            {cid:21,name:'地推活动2'},
+            {cid:22,name:'美食/餐厅线上活动12'},
+            {cid:23,name:'线下主题活动22'},
+            {cid:24,name:'的手法第三方2'},
+            {cid:25,name:'噢噢噢噢2'}
+          ]},
+          {id: 3 ,name: '的撒打算', data :[
+            {cid:31,name:'地推活动3'},
+            {cid:32,name:'美食/餐厅线上活动13'},
+            {cid:33,name:'线下主题活动23'},
+            {cid:34,name:'的手法第三方3'},
+            {cid:35,name:'噢噢噢噢3'}
+          ]},
+        ]
       }
     },
     methods: {
       onSubmit() {
         return
+      },
+      changeType(type) {
+        if (this.submitfrom.alltype !== type || !this.submitfrom.alltype){
+          this.submitfrom.alltype = type
+          // this.submitfrom.type.pop()
+          // console.log(this.submitfrom.type[this.submitfrom.type.length-1])
+         this.submitfrom.type = this.submitfrom.type.slice(this.submitfrom.type.length-1) 
+          console.log(this.submitfrom.type)
+
+        }
       }
     },
     created() {
-      this.$axios.post(
-        'http://10.10.18.38:8080/merType/tree',
-        this.$qs.stringify({})
-      ).then(res => {
-        console.log(res)
-      }).catch(error => {
-          console.log(error)
-      })
+      // this.$axios.post(
+      //   'http://10.10.18.38:8080/merType/tree',
+      //   this.$qs.stringify({})
+      // ).then(res => {
+      //   console.log(res)
+      // }).catch(error => {
+      //     console.log(error)
+      // })
     }
   }
 </script>
@@ -180,6 +179,7 @@
         }
       }
     }
+    
     .from-radio {
       width: 100%;
       border: 1px solid #d9d9d9;
@@ -279,6 +279,12 @@
         border: none;
         border-radius: 2px;
       }
+    }
+    .isnow{
+      border: 1px solid #ffff00;
+    }
+    .radiobox:last-of-type .line-box{
+      display: none;
     }
   }
 </style>
