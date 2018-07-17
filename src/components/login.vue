@@ -1,7 +1,7 @@
 <template>
   <div id="login">
     <div class="form-box">
-        <el-form :model="loginFrom" :rules="rules" ref="loginFrom"  class="loginform-box">
+        <el-form :model="loginFrom" :rules="rules" ref="loginFrom"  class="loginform-box" :status-icon='true'>
            <el-form-item  prop="email">
             <el-input v-model="loginFrom.email" placeholder="请输入您的企业账号"></el-input>
           </el-form-item>
@@ -38,18 +38,33 @@ export default {
     }
   },
   methods: {
-    login(formName) {
+    login(formName) { 
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.$axios.post(
-            'http://localhost:3002/cloud-api/companyInfo/companyLogin',
+            this.$GLOBAL.loginApi,
             this.$qs.stringify({
-              email: this.$base.decode(this.loginFrom.email),
-              password: this.$base.decode(this.loginFrom.password)
+              email: this.$base64.encode(this.loginFrom.email),
+              password: this.$base64.encode(this.loginFrom.password)
             })
           ).then(res => {
-            var reslut = JSON.parse(this.$base64.encode(res.data))
-            console.log(reslut)
+            var result = JSON.parse(this.$base64.decode(res.data))
+            console.log(result)
+            if(result.code == 10000){
+              this.$message({
+                message: '登录成功，即将跳转主页',
+                type: 'success'
+              });
+              sessionStorage.setItem('token',result.data.token)
+              setTimeout(() => {
+                this.$router.push({
+                  path: './main/demandrecord'
+                })
+              }, 3000);
+              
+            }else{
+              this.$message.error(result.info)
+            }
           }).catch(error => {
 
           })

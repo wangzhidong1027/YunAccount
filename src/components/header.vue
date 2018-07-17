@@ -22,20 +22,130 @@
         中欣安泰集团<i class="el-icon-caret-bottom el-icon--right"></i>
       </span>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item>修改密码</el-dropdown-item>
-        <el-dropdown-item>退出登录</el-dropdown-item>
+        <el-dropdown-item @click.native="dialogVisible=true">修改密码</el-dropdown-item>
+        <el-dropdown-item @click.native="loginout()">退出登录</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
     </div>
+    <el-dialog 
+      title="修改密码" 
+      :visible.sync="dialogVisible" 
+      width="30%" 
+      :close-on-click-modal='false'
+      @close='reset'
+      center>
+      <el-form :model="resetpasseord" :rules="rules" ref="resetpasseord" :status-icon='true'  label-width="100px" >
+        <el-form-item  prop="originPwd" label='原密码'>
+          <el-input v-model="resetpasseord.originPwd" placeholder="请输入原密码" type='password'></el-input>
+        </el-form-item>
+         <el-form-item  prop="nwepassword" label='新密码'>
+          <el-input v-model="resetpasseord.nwepassword" placeholder="请输入新密码" type='password'></el-input>
+        </el-form-item>
+          <el-form-item  prop="againpassword" label='确认新密码'>
+          <el-input v-model="resetpasseord.againpassword" placeholder="请再次输入新密码" type='password'></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="change('resetpasseord')">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 export default {
   name: 'MyHeader',
+  data() {
+    return {
+      dialogVisible: false,
+      resetpasseord: {
+        originPwd: '',
+        nwepassword: '',
+        againpassword: ''
+      },
+      rules: {
+        originPwd: [
+          {required: true, message: '密码不能为空', trigger: 'blur' },
+        ],
+        nwepassword: [
+          {required: true, message: '新密码不能为空', trigger: 'blur' },
+          {min: 6 ,max: 18, message: '新密码为6-18位', trigger: 'blur'},
+          {validator: (rule,value,callback) => { 
+            if(/^(?![0-9]+$)(?![a-zA-Z]+$)(?![_]+$)[0-9A-Za-z_]{6,16}$/.test(value)){
+              callback()
+            }else{
+              callback(new Error("密码为不包含特殊字符的数字与字母组合,"));
+            }
+          },trigger: 'blur'}
+        ],
+        againpassword: [
+          {required: true, message: '密码不能为空', trigger: 'blur' },
+          {min: 6 ,max: 18, message: '新密码为6-18位', trigger: 'blur'},
+          {validator: (rule,value,callback) => { 
+            if(value !== this.resetpasseord.nwepassword){
+              callback(new Error("密码不一致"));
+            }else{
+              callback()
+            }
+          },trigger: 'blur'}
+        ]
+      }
+    }
+  },
   methods: {
     handleSelect() {
       console.log()
+    },
+    change(formName) {
+        this.$refs[formName].validate((valid) => {
+        if (valid) {
+            this.$axios.post(
+              this.$GLOBAL.setPasswordApi,
+              this.$qs.stringify({
+                originPwd: this.$base64.encode(this.resetpasseord.originPwd),
+                nowPwd: this.$base64.encode(this.resetpasseord.nwepassword),
+                againpassword: this.$base64.encode(this.resetpasseord.againpassword)
+              })
+            ).then(res => {
+              var result = JSON.parse(this.$base64.decode(res.data))
+              if (result.code == 10000){
+                this.$refs.resetpasseord.resetFields();
+                this.$message({
+                  message: '密码修改成功',
+                  type: 'success'
+                })
+                this.dialogVisible = false
+              }else{
+                this.$message.error(result.info)
+              }
+            }).catch(error => {
+
+            })
+        }else{
+          this.$message.error('请按规则填写')
+        }
+      })
+    },
+    reset() {
+      this.$refs.resetpasseord.resetFields();
+    },
+    loginout() {
+      this.$axios.post(
+        this.$GLOBAL.loginOutApi,
+      ).then(res => {
+        var result = JSON.parse(this.$base64.decode(res.data))
+        if (result.code == 10000){
+          sessionStorage.clear()
+          this.$router.push({
+            path: './login'
+          })
+        }else{
+          this.$message.error(result.info)
+        }
+      }).catch(error => {
+
+      })
     }
   }
 }
