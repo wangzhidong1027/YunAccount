@@ -1,12 +1,14 @@
 <template>
   <div id="post-demand">
-    <el-form >
+    <el-form :rules="rules" ref="submitfrom">
       <p class="input-title">填写金额</p>
       <div class="money-box">
         <div class="input-box">
-          <el-input v-model="money" placeholder="请输入金额" size="small ">
-            <b class="money_zh" slot="suffix">元</b>
-          </el-input>
+          <el-form-item prop="money">
+            <el-input v-model="submitfrom.money" placeholder="请输入金额" size="small ">
+              <b class="money_zh" slot="suffix">元</b>
+            </el-input>
+          </el-form-item>
         </div>
         <div class="other-money clear">
           <div class="charge">服务费：<b>7500元</b></div>
@@ -14,14 +16,15 @@
         </div>
       </div>
       <p class="input-title">选择服务内容</p>
+      <el-form-item  prop="type">
       <div class="from-radio">
-        <div class="radiobox" v-for='typeitem in typedata'>
-          <div class="from-checkbox clear" :class=" typeitem.id == submitfrom.alltype? 'isnow':''">
-            <div class="radio-title">{{typeitem.name}}:</div>
+        <div class="radiobox" v-for='typeitem in typedata' :key="typeitem.catid">
+          <div class="from-checkbox clear" :class="typeitem.catid == submitfrom.alltype? 'isnow':''">
+            <div class="radio-title">{{typeitem.cat}}:</div>
             <div class="checkbox-item">
               <el-form-item prop="type">
-                <el-checkbox-group v-model="submitfrom.type" @change="changeType(typeitem.id)">
-                  <el-checkbox v-for="select in typeitem.data " :label="select.cid" name="type">{{select.name}}</el-checkbox>
+                <el-checkbox-group v-model="submitfrom.type" @change="changeType(typeitem.catid)">
+                  <el-checkbox v-for="select in typeitem.childList " :label="select.catid" name="type" :key="select.catid">{{select.cat}}</el-checkbox>
                 </el-checkbox-group>
               </el-form-item>
             </div>
@@ -29,10 +32,13 @@
           <div class="line-box"><p class="line"></p></div>
         </div>
       </div>
+      </el-form-item>
        <p class="input-title">期望完成时间</p>
-      <div class="data">
-         <el-date-picker v-model="data" type="date" placeholder="选择日期" format="yyyy 年 MM 月 dd 日"></el-date-picker>
-      </div>
+      <el-form-item  prop="data">
+        <div class="data">
+           <el-date-picker v-model="submitfrom.data" type="date" placeholder="选择日期" format="yyyy 年 MM 月 dd 日"></el-date-picker>
+        </div>
+      </el-form-item>
     <div class="solid-line"></div>
     <div class="remittance">
        <p class="input-title">汇款信息</p>
@@ -56,7 +62,7 @@
        <p class="input-title">温馨提示：<span>请线下汇款，汇款时间在工作日9:00~16:30之间预计2小时内到账，其它时间汇款预计下个工作日内到账，请注意查收到</span></p>
     </div>
     <div class="btn-box">
-      <button @click="onSubmit()">提交</button>
+      <button @click="onSubmit('submitfrom')">提交</button>
     </div>
     </el-form>
   </div>
@@ -68,61 +74,88 @@
     data() {
       return {
         submitfrom : {
+          money: '',
           alltype: '',
+          data: '',
           type: []
         },
-        money: '',
-        
-        data: '',
-        typedata: [
-          {id: 1 ,name: '大声道', data :[
-            {cid:11,name:'地推活动'},
-            {cid:12,name:'美食/餐厅线上活动1'},
-            {cid:13,name:'线下主题活动2'},
-            {cid:14,name:'的手法第三方'},
-            {cid:15,name:'噢噢噢噢'}
-          ]},
-          {id: 2 ,name: '请问请问', data :[
-            {cid:21,name:'地推活动2'},
-            {cid:22,name:'美食/餐厅线上活动12'},
-            {cid:23,name:'线下主题活动22'},
-            {cid:24,name:'的手法第三方2'},
-            {cid:25,name:'噢噢噢噢2'}
-          ]},
-          {id: 3 ,name: '的撒打算', data :[
-            {cid:31,name:'地推活动3'},
-            {cid:32,name:'美食/餐厅线上活动13'},
-            {cid:33,name:'线下主题活动23'},
-            {cid:34,name:'的手法第三方3'},
-            {cid:35,name:'噢噢噢噢3'}
-          ]},
-        ]
+        rules: {
+          money: [
+            { required: true, message: '需求金额不能为空', trigger: 'blur' }
+          ],
+          trye: [
+            { type: 'array', required: true, message: '请至少选择一个服务内容', trigger: 'change' }
+          ],
+          data: [
+            { required: true, message: '请选择期望完成时间', trigger: 'change' }
+          ]
+        },
+        typedata: []
+      }
+    },
+    computed: {
+      feemoney: function () {
+        return this.submitfrom.money
+      },
+      realmoney: function () {
+         return this.submitfrom.money / 0.75
       }
     },
     methods: {
-      onSubmit() {
+      onSubmit(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            alert('submit!');
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        })
         return
+        this.$axios.post(
+          this.$GLOBAL.submitOrderAAPI,
+          this.$qs.stringify({
+            needid: this.submitfrom.alltype,
+            needcatpath: this.submitfrom.type,
+            payway: '1',
+            money: this.submitfrom.money,
+            realmoney: this.realmoney,
+            feemoney: this.feemoney,
+            pacttime: this.submitfrom.data,
+            agentNo: '445'
+          })
+        ).then(res => {
+          var result = JSON.parse(this.$base64.decode(res.data))
+          console.log(result)
+        })
       },
       changeType(type) {
+        if(!this.submitfrom.type.length) {
+          this.submitfrom.alltype = ''
+          return
+        }
         if (this.submitfrom.alltype !== type || !this.submitfrom.alltype){
           this.submitfrom.alltype = type
           // this.submitfrom.type.pop()
           // console.log(this.submitfrom.type[this.submitfrom.type.length-1])
-         this.submitfrom.type = this.submitfrom.type.slice(this.submitfrom.type.length-1) 
-          console.log(this.submitfrom.type)
-
+         this.submitfrom.type = this.submitfrom.type.slice(this.submitfrom.type.length-1)
         }
       }
     },
     created() {
-      // this.$axios.post(
-      //   'http://10.10.18.38:8080/merType/tree',
-      //   this.$qs.stringify({})
-      // ).then(res => {
-      //   console.log(res)
-      // }).catch(error => {
-      //     console.log(error)
-      // })
+      this.$axios.post(
+       this.$GLOBAL.getAllTypeApi,
+       this.$qs.stringify({
+          catId: '37'
+        })
+      ).then(res => {
+        var result = JSON.parse(this.$base64.decode(res.data))
+        if(result.code == 10000) {
+          this.typedata = result.data[0].childList
+        }
+      }).catch(error => {
+          console.log(error)
+      })
     }
   }
 </script>
@@ -150,6 +183,7 @@
         display: inline-block;
         width: 350px;
         height: 36px;
+        padding-bottom: 15px;
         .el-input__inner {
           background: #f9f9f9;
           height: 32px;
@@ -179,7 +213,7 @@
         }
       }
     }
-    
+
     .from-radio {
       width: 100%;
       border: 1px solid #d9d9d9;
@@ -281,7 +315,8 @@
       }
     }
     .isnow{
-      border: 1px solid #ffff00;
+      border: 1px solid #ffc44c;
+      background: #fff7e5;
     }
     .radiobox:last-of-type .line-box{
       display: none;

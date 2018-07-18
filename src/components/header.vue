@@ -27,10 +27,10 @@
       </el-dropdown-menu>
     </el-dropdown>
     </div>
-    <el-dialog 
-      title="修改密码" 
-      :visible.sync="dialogVisible" 
-      width="30%" 
+    <el-dialog
+      title="修改密码"
+      :visible.sync="dialogVisible"
+      width="30%"
       :close-on-click-modal='false'
       @close='reset'
       center>
@@ -71,7 +71,7 @@ export default {
         nwepassword: [
           {required: true, message: '新密码不能为空', trigger: 'blur' },
           {min: 6 ,max: 18, message: '新密码为6-18位', trigger: 'blur'},
-          {validator: (rule,value,callback) => { 
+          {validator: (rule,value,callback) => {
             if(/^(?![0-9]+$)(?![a-zA-Z]+$)(?![_]+$)[0-9A-Za-z_]{6,16}$/.test(value)){
               callback()
             }else{
@@ -82,7 +82,7 @@ export default {
         againpassword: [
           {required: true, message: '密码不能为空', trigger: 'blur' },
           {min: 6 ,max: 18, message: '新密码为6-18位', trigger: 'blur'},
-          {validator: (rule,value,callback) => { 
+          {validator: (rule,value,callback) => {
             if(value !== this.resetpasseord.nwepassword){
               callback(new Error("密码不一致"));
             }else{
@@ -105,7 +105,7 @@ export default {
               this.$qs.stringify({
                 originPwd: this.$base64.encode(this.resetpasseord.originPwd),
                 nowPwd: this.$base64.encode(this.resetpasseord.nwepassword),
-                againpassword: this.$base64.encode(this.resetpasseord.againpassword)
+                nowComPwd: this.$base64.encode(this.resetpasseord.againpassword)
               })
             ).then(res => {
               var result = JSON.parse(this.$base64.decode(res.data))

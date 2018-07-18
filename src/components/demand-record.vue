@@ -4,7 +4,7 @@
       <div>
         <h4>企业名称公司</h4>
         <div class="link">
-          <el-button type="primary">发布需求</el-button>
+          <el-button type="primary" link="#/main/postdemand">发布需求</el-button>
         </div>
       </div>
     </div>
@@ -14,12 +14,12 @@
       </div>
       <div class="order-data">
         <div class="stat-data">
-          <el-date-picker v-model="staedata" align="left" type="date" placeholder="提交日期（起）" ></el-date-picker>
+          <el-date-picker v-model="staedata" :picker-options="pickerOptions1" align="left" type="date" placeholder="提交日期（起）" value-format="yyyy-MM-dd"></el-date-picker>
         </div>
         <div class="end-data">
-          <el-date-picker v-model="enddata" align="right" type="date" placeholder="提交日期（止）"></el-date-picker>
+          <el-date-picker v-model="enddata" :picker-options="pickerOptions1" align="right" type="date" placeholder="提交日期（止）" value-format="yyyy-MM-dd"></el-date-picker>
         </div>
-         <el-button type="primary">搜索</el-button>
+         <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
       </div>
       <div class="order-table">
         <el-table :data="tableData2" style="width: 100%" row-class-name="tableRowClassName">
@@ -48,7 +48,6 @@
             <el-upload class="upload" action="https://jsonplaceholder.typicode.com/posts">
                <div class="upimge"><button>上传付款凭证</button></div>
             </el-upload>
-
              <!--<div class="delorder"><button @click="deleteOrder">删除</button></div>-->
              <!--<div class="upimge"><button>上传付款凭证</button></div>-->
              <!--<div class="confirm"><button>确认验收</button></div>-->
@@ -58,7 +57,7 @@
       </el-table>
       </div>
       <div class="page ">
-        <el-pagination  background layout="prev, pager, next, total, jumper" :total="1000" ></el-pagination>
+        <el-pagination  background layout="prev, pager, next, total, jumper" :total="count" ></el-pagination>
       </div>
     </div>
     <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
@@ -76,6 +75,12 @@ export default {
     return {
       staedata: '',
       enddata: '',
+      pickerOptions1: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
+        },
+      },
+      count: 0,
       tableData2: [{
           date: '2018-05-22 13:54:00',
           order: '10000000000000',
@@ -103,7 +108,47 @@ export default {
       dialogVisible: false
     }
   },
+  created() {
+    this.getorder(1)
+  },
   methods: {
+    getorder(pageNo,timeStart,timeEnd) {
+      this.$axios.post(
+        this.$GLOBAL.ordeerListApi,
+        this.$qs.stringify({
+          pageSize: '8',
+          pageNo: pageNo,
+          chargetimeStart: timeStart,
+          chargetimeEnd: timeEnd
+        })
+      ).then( res => {
+        var result = JSON.parse(this.$base64.decode(res.data))
+        if(result.code == 10000){
+          this.tableData2 = result.data.info
+          this.count = result.data.count
+        }else{
+           this.$message.error(result.info)
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    search() {
+      console.log(this.staedata)
+      if(!this.staedata){
+        this.$message.error('请选择开始日期')
+        return false
+      }
+      if(!this.enddata){
+        this.$message.error('请选择结束日期')
+         return false
+      }
+      if(new Date(this.enddata) - new Date(this.staedata) < 0){
+        this.$message.error('请选择合法日期')
+         return false
+      }
+      this.getorder(1,this.staedata,this.enddata)
+    },
     deleteOrder() {
       this.$confirm('此操作将删除该订单, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -123,7 +168,7 @@ export default {
     },
     showimg() {
       this.dialogVisible = true
-    }
+    },
   }
 }
 </script>

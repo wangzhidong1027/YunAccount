@@ -16,7 +16,7 @@ Vue.config.productionTip = false
 Vue.use(ElementUI);
 
 const HTTP_request = Axios.create({
-    timeout:2000  //request timeout
+    timeout:20000  //request timeout
 })
 //添加请求拦截器
 HTTP_request.interceptors.request.use(function (config) {
@@ -40,7 +40,7 @@ HTTP_request.interceptors.response.use(
   },
   error => {
     if(error.response){
-      sessionStorage.clear();
+      // sessionStorage.clear();
       // router.replace({
       //   path:'./505'
       // });

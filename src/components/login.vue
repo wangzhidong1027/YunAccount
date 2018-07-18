@@ -38,7 +38,7 @@ export default {
     }
   },
   methods: {
-    login(formName) { 
+    login(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.$axios.post(
@@ -49,7 +49,6 @@ export default {
             })
           ).then(res => {
             var result = JSON.parse(this.$base64.decode(res.data))
-            console.log(result)
             if(result.code == 10000){
               this.$message({
                 message: '登录成功，即将跳转主页',
@@ -61,7 +60,6 @@ export default {
                   path: './main/demandrecord'
                 })
               }, 3000);
-              
             }else{
               this.$message.error(result.info)
             }
@@ -69,11 +67,10 @@ export default {
 
           })
         } else {
-          console.log('error submit!!');
           return false;
         }
       })
-     
+
     }
   }
 }

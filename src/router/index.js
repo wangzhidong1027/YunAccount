@@ -45,9 +45,9 @@ router.beforeEach((to, from, next) => {
   let token = sessionStorage.getItem('token');
   var title = to.meta.title || '欣享科技'
   window.document.title = title
-  if (!token && to.name !== 'login' && to.name !== 'error-500' && to.name !== 'error-404') { // 如果不是登录，并且未登录，就跳转到登录页面
+  if (!token && to.name !== 'Login' && to.name !== 'error-500' && to.name !== 'error-404') { // 如果不是登录，并且未登录，就跳转到登录页面
     next({
-      name: 'login'
+      name: 'Login'
     });
     window.scrollTo(0, 0);
   } else {

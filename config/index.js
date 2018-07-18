@@ -3,34 +3,34 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
-
+const ip = require('./ipconfig')
 module.exports = {
   dev: {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-       "/toolcate": {
-         type: 'proxy',
-         target: 'http://10.10.18.38:8088/',
-         // headers : {
-         //   'X-Real-IP' : '127.0.0.1:8080'
-         // },
-         changeOrigin: true,
-       },
-       "/companyInfo": {
+        "/cloud-api": {
         type: 'proxy',
-          target: 'http://10.10.18.17:8081/cloud-api',
+          target: 'http://10.10.18.17:8081/',
           // headers : {
           //   'X-Real-IP' : '127.0.0.1:8080'
           // },
           changeOrigin: true,
         },
+       "/cloud": {
+         type: 'proxy',
+         target: 'http://10.10.18.38:8080/',
+         // headers : {
+         //   'X-Real-IP' : '127.0.0.1:8080'
+         // },
+         changeOrigin: true,
+       },
     },
 
     // Various Dev Server settings
-    host: 'localhost', // can be overwritten by process.env.HOST
-    port: 3002, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+    host: ip.ip || 'localhost', // can be overwritten by process.env.HOST
+    port: 3005, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
     notifyOnErrors: true,
