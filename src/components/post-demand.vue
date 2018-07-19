@@ -1,18 +1,21 @@
 <template>
-  <div id="post-demand">
-    <el-form :rules="rules" ref="submitfrom">
+  <div id="post-demand" v-loading="show" target="#post-demand"
+       element-loading-text="加载中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(255, 255, 255, 1)">
+    <el-form  ref="submitfrom" v-if="!show">
       <p class="input-title">填写金额</p>
       <div class="money-box">
         <div class="input-box">
           <el-form-item prop="money">
-            <el-input v-model="submitfrom.money" placeholder="请输入金额" size="small ">
+            <el-input v-model="submitfrom.money" placeholder="请输入金额" size="small "  >
               <b class="money_zh" slot="suffix">元</b>
             </el-input>
           </el-form-item>
         </div>
         <div class="other-money clear">
-          <div class="charge">服务费：<b>7500元</b></div>
-          <div class="dealmoney">打款金额：<b>107500元</b></div>
+          <div class="charge">服务费：<b>{{feemoney}}元</b></div>
+          <div class="dealmoney">打款金额：<b>{{realmoney}}元</b></div>
         </div>
       </div>
       <p class="input-title">选择服务内容</p>
@@ -24,7 +27,7 @@
             <div class="checkbox-item">
               <el-form-item prop="type">
                 <el-checkbox-group v-model="submitfrom.type" @change="changeType(typeitem.catid)">
-                  <el-checkbox v-for="select in typeitem.childList " :label="select.catid" name="type" :key="select.catid">{{select.cat}}</el-checkbox>
+                  <el-checkbox v-for="select in typeitem.childList " :label="select.catpath" name="type" :key="select.catpath">{{select.cat}}</el-checkbox>
                 </el-checkbox-group>
               </el-form-item>
             </div>
@@ -36,7 +39,7 @@
        <p class="input-title">期望完成时间</p>
       <el-form-item  prop="data">
         <div class="data">
-           <el-date-picker v-model="submitfrom.data" type="date" placeholder="选择日期" format="yyyy 年 MM 月 dd 日"></el-date-picker>
+           <el-date-picker v-model="submitfrom.data" type="date" placeholder="选择日期" value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptions1"></el-date-picker>
         </div>
       </el-form-item>
     <div class="solid-line"></div>
@@ -61,10 +64,10 @@
     <div class="hint">
        <p class="input-title">温馨提示：<span>请线下汇款，汇款时间在工作日9:00~16:30之间预计2小时内到账，其它时间汇款预计下个工作日内到账，请注意查收到</span></p>
     </div>
+  </el-form>
     <div class="btn-box">
       <button @click="onSubmit('submitfrom')">提交</button>
     </div>
-    </el-form>
   </div>
 </template>
 
@@ -79,57 +82,102 @@
           data: '',
           type: []
         },
-        rules: {
-          money: [
-            { required: true, message: '需求金额不能为空', trigger: 'blur' }
-          ],
-          trye: [
-            { type: 'array', required: true, message: '请至少选择一个服务内容', trigger: 'change' }
-          ],
-          data: [
-            { required: true, message: '请选择期望完成时间', trigger: 'change' }
-          ]
+        show: true,
+         pickerOptions1: {
+          disabledDate(time) {
+            return (time.getTime() - Date.now()) < -3600000 * 24
+          },
         },
+        // rules: {
+        //   money: [
+        //     { required: true, message: '需求金额不能为空', trigger: 'blur' }
+        //   ],
+        //   trye: [
+        //     { type: 'array', required: true, message: '请至少选择一个服务内容', trigger: 'change' }
+        //   ],
+        //   data: [
+        //     { required: true, message: '请选择期望完成时间', trigger: 'blur' }
+        //   ]
+        // },
         typedata: []
       }
     },
     computed: {
       feemoney: function () {
-        return this.submitfrom.money
+        return this.submitfrom.money * 0.075
       },
       realmoney: function () {
-         return this.submitfrom.money / 0.75
+         return this.submitfrom.money * 1.075
       }
     },
     methods: {
-      onSubmit(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        })
-        return
+      /**
+       * 提交需求
+       */
+      onSubmit() {
+        if( !this.submitfrom.money || this.submitfrom.money ==0){
+          this.$message({
+              type: 'info',
+              message: '请填写需求金额'
+          });
+          return
+        }
+        if( !this.submitfrom.alltype){
+          this.$message({
+              type: 'info',
+              message: '请选择服务内容'
+          });
+          return
+        }
+         if( !this.submitfrom.data){
+          this.$message({
+              type: 'info',
+              message: '请选择期望完成时间'
+          });
+          return
+        }
+        const loading = this.$loading({
+          lock: true,
+          text: '提交中',
+          spinner: 'el-icon-loading',
+          background: 'rgba(255, 255, 255, 0)'
+        });
         this.$axios.post(
           this.$GLOBAL.submitOrderAAPI,
           this.$qs.stringify({
             needid: this.submitfrom.alltype,
-            needcatpath: this.submitfrom.type,
+            needcatpath: this.submitfrom.type.toString(),
             payway: '1',
             money: this.submitfrom.money,
             realmoney: this.realmoney,
             feemoney: this.feemoney,
             pacttime: this.submitfrom.data,
-            agentNo: '445'
+            agentNo:  this.$GLOBAL.agent.agentNo
           })
         ).then(res => {
           var result = JSON.parse(this.$base64.decode(res.data))
-          console.log(result)
+          if(result.code == 10000){
+             this.$message({
+                message: '需求发布成功',
+                type: 'success'
+              });
+              loading.close();
+              setTimeout(() => {
+                this.$router.push({
+                  path: '/main/demandrecord'
+                })
+              }, 3000);
+          }else{
+             loading.close();
+             this.$message.error(result.info);
+          }
+        }).catch(error => {
+           loading.close();
+           console.log(error)
         })
       },
       changeType(type) {
+        // 取消反选操作
         if(!this.submitfrom.type.length) {
           this.submitfrom.alltype = ''
           return
@@ -152,6 +200,7 @@
         var result = JSON.parse(this.$base64.decode(res.data))
         if(result.code == 10000) {
           this.typedata = result.data[0].childList
+          this.show = false
         }
       }).catch(error => {
           console.log(error)

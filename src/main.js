@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import store from './store/store';
 
 import Axios from 'axios'
 import qs from 'qs'
@@ -57,6 +58,7 @@ Vue.prototype.$GLOBAL = GLOBAL
 new Vue({
   el: '#app',
   router,
+  store: store,
   components: { App },
   template: '<App/>'
 })
