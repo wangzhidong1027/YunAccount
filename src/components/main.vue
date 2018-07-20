@@ -5,10 +5,12 @@
       <side-menu></side-menu>
     </div>
     <div class="main-content">
-      <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item>我的需求</el-breadcrumb-item>
-        <el-breadcrumb-item>发布需求</el-breadcrumb-item>
-      </el-breadcrumb>
+      <div style="height: 40px;">
+         <el-breadcrumb separator-class="el-icon-arrow-right" v-if="showtbr">
+          <el-breadcrumb-item>我的需求</el-breadcrumb-item>
+          <el-breadcrumb-item>发布需求</el-breadcrumb-item>
+        </el-breadcrumb>
+      </div>
       <router-view></router-view>
     </div>
   </div>
@@ -25,6 +27,16 @@ export default {
   },
   data () {
     return {
+    }
+  },
+  created(){
+    this.$axios.post(
+
+    )
+  },
+  computed: {
+    showtbr() {
+      return this.$store.state.menu.showBreadcrumb
     }
   }
 }

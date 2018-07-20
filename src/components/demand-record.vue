@@ -50,7 +50,7 @@
             </el-upload>
              <div class="delorder" v-if="scope.row.status==1"><button @click="deleteOrder(scope.row.id,scope.row.fid)">删除</button></div>
              <!--<div class="upimge"><button>上传付款凭证</button></div>-->
-             <!--<div class="confirm"><button @click='confirmOrder(scope.row.id,scope.row.fid)'>确认验收</button></div>-->
+             <div class="confirm" v-if="new Date(scope.row.pacttime).toDateString() === nowDate && scope.row.status>=4 && scope.row.status<7 "><button @click='confirmOrder(scope.row.id,scope.row.fid)'>确认验收</button></div>
              <div class="lookimg" v-if="scope.row.status>=3 && scope.row.status<=7"><button @click="showimg(scope.row.imgurl)">查看付款凭证</button></div>
           </div>
         </el-table-column>
@@ -86,8 +86,14 @@ export default {
       loogkimg: '',
       pageNo: 1,
       tableData2: [],
+      nowDate: '',
       dialogVisible: false
     }
+  },
+  computed: {
+     typedata: function() {
+        return this.$store.state.AllType.allType
+      }
   },
   filters: {
     data: function (value) {
@@ -116,25 +122,25 @@ export default {
      /**
      *  @ 分页功能end
      */
-    getorder(timeStart,timeEnd) {
+    getorder() {
       this.loading = true
       this.$axios.post(
         this.$GLOBAL.ordeerListApi,
         this.$qs.stringify({
           pageSize: '8',
           pageNo: this.pageNo,
-          addtimeStart: timeStart,
-          addtimeEnd: timeEnd
+          addtimeStart: this.staedata,
+          addtimeEnd: this.enddata
         })
       ).then( res => {
-         this.loading = false
+        this.loading = false
         var result = JSON.parse(this.$base64.decode(res.data))
         if(result.code == 10000){
           this.tableData2 = result.data.info
           console.log( this.tableData2)
           this.count = result.data.count
         }else{
-           this.$message.error(result.info)
+          this.$message.error(result.info)
         }
       }).catch(error => {
         this.loading = false
@@ -149,18 +155,20 @@ export default {
       this.upImging.fid = fid
     },
     upimg(response) {
-      if(response){
+       var data = JSON.parse(this.$base64.decode(response))
+      if(data.code == 10000){
          this.$axios.post(
           this.$GLOBAL.upPayImgApi,
           this.$qs.stringify({
             agentNo:this.$GLOBAL.agent.agentNo,
             id: this.upImging.id,
             fid: this.upImging.fid,
-            imgurl: response.serverUrl
+            imgurl: data.data.serverUrl
           })
         ).then(res => {
           var result = JSON.parse(this.$base64.decode(res.data))
           if(result.code == 10000){
+              this.getorder()
              this.$message({
                 type: 'success',
                 message: '凭证上传成功!'
@@ -168,7 +176,7 @@ export default {
           }else{
             this.$message({
               type: 'success',
-              message: result.info
+              message: data.info
             });
           }
         }).catch(error => {
@@ -193,7 +201,7 @@ export default {
          return false
       }
       this.pageNo = 1
-      this.getorder(this.staedata,this.enddata)
+      this.getorder()
     },
     deleteOrder(id,fid){
       var _this = this
@@ -212,6 +220,7 @@ export default {
           ).then(res => {
             var result = JSON.parse(_this.$base64.decode(res.data))
             if(result.code == 10000){
+               _this.getorder()
                _this.$message({
                   type: 'success',
                   message: '删除成功!'
@@ -245,13 +254,14 @@ export default {
           this.axios(
             this.$GLOBAL.affirmOrderApi,
             this.$qs.stringify({
-              agentNo: '1111',
+              agentNo: this.$GLOBAL.agent.agentNo,
               id: id,
               fid: fid
             })
           ).then(res => {
             var result = JSON.parse(this,$base64.decode(res.data))
             if(result.code == 10000){
+                this.getorder()
                this.$message({
                   type: 'success',
                   message: '验收成功!'
@@ -270,11 +280,14 @@ export default {
           });
         });
     },
-
     showimg(src) {
       this.loogkimg = src
       this.dialogVisible = true
-    },
+    }
+  },
+  mounted(){
+    this.nowDate = new Date().toDateString()
+
   }
 }
 </script>

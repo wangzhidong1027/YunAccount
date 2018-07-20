@@ -58,7 +58,7 @@ Vue.prototype.$GLOBAL = GLOBAL
 new Vue({
   el: '#app',
   router,
-  store: store,
+  store:store ,
   components: { App },
   template: '<App/>'
 })

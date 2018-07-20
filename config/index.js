@@ -18,6 +18,14 @@ module.exports = {
           // },
           changeOrigin: true,
         },
+        "/merch": {
+        type: 'proxy',
+          target: 'http://10.10.18.17:8081/',
+          // headers : {
+          //   'X-Real-IP' : '127.0.0.1:8080'
+          // },
+          changeOrigin: true,
+        },
        "/cloud": {
          type: 'proxy',
          target: 'http://10.10.18.38:8080/',

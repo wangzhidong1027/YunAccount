@@ -6,6 +6,8 @@ import aboutme from '@/components/aboutme'
 import Login from '@/components/login'
 import PostDemand from '@/components/post-demand'
 import DemandRecord from '@/components/demand-record'
+
+
 Vue.use(Router)
 
 const router = new Router({
@@ -24,9 +26,16 @@ const router = new Router({
           path: '/main/demandrecord',
           name: 'DemandRecord',
           component: DemandRecord
-        }
+        },
+        {
+          path: '/userifo',
+          name: 'userifo',
+          component: () => import('@/components/user.vue')
+        },
+        { path: '/main', redirect: '/main/demandrecord'}
       ]
     },
+
      {
       path: '/login',
       name: 'Login',

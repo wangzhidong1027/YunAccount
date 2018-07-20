@@ -1,9 +1,10 @@
 <template>
-  <div id="post-demand" v-loading="show" target="#post-demand"
-       element-loading-text="加载中"
-    element-loading-spinner="el-icon-loading"
-    element-loading-background="rgba(255, 255, 255, 1)">
-    <el-form  ref="submitfrom" v-if="!show">
+  <!--<div id="post-demand" v-loading="show" target="#post-demand"-->
+       <!--element-loading-text="加载中"-->
+    <!--element-loading-spinner="el-icon-loading"-->
+    <!--element-loading-background="rgba(255, 255, 255, 1)">-->
+  <div id="post-demand">
+    <el-form ref="submitfrom">
       <p class="input-title">填写金额</p>
       <div class="money-box">
         <div class="input-box">
@@ -99,7 +100,7 @@
         //     { required: true, message: '请选择期望完成时间', trigger: 'blur' }
         //   ]
         // },
-        typedata: []
+        // typedata: []
       }
     },
     computed: {
@@ -108,7 +109,11 @@
       },
       realmoney: function () {
          return this.submitfrom.money * 1.075
+      },
+      typedata: function () {
+        return this.$store.state.AllType.allType
       }
+
     },
     methods: {
       /**
@@ -191,21 +196,25 @@
       }
     },
     created() {
-      this.$axios.post(
-       this.$GLOBAL.getAllTypeApi,
-       this.$qs.stringify({
-          catId: '37'
-        })
-      ).then(res => {
-        var result = JSON.parse(this.$base64.decode(res.data))
-        if(result.code == 10000) {
-          this.typedata = result.data[0].childList
-          this.show = false
-        }
-      }).catch(error => {
-          console.log(error)
-      })
-    }
+      this.$store.commit('isshow',true)
+      // this.$axios.post(
+      //  this.$GLOBAL.getAllTypeApi,
+      //  this.$qs.stringify({
+      //     catId: '37'
+      //   })
+      // ).then(res => {
+      //   var result = JSON.parse(this.$base64.decode(res.data))
+      //   if(result.code == 10000) {
+      //     this.typedata = result.data[0].childList
+      //     this.show = false
+      //   }
+      // }).catch(error => {
+      //     console.log(error)
+      // })
+    },
+   destroyed() {
+     this.$store.commit('isshow',false)
+   }
   }
 </script>
 

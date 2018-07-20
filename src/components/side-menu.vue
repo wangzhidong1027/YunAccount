@@ -1,17 +1,27 @@
 <template>
   <div class="sidebar" >
-    <div class="menu-one">商户管理</div>
-    <ul>
-      <li><i class="el-icon-setting el-icon--left"></i>商户信息</li>
-    </ul>
+    <div class="all" v-for="item in menu">
+       <div class="menu-one">{{item.title}}</div>
+        <ul>
+          <li v-for="childmenu in item.child"><i class=" el-icon--left" :class="childmenu.icon"></i>{{childmenu.title}}</li>
+        </ul>
+    </div>
+
   </div>
 </template>
 
 <script>
 export default {
   name: 'Side-Menu',
+  computed: {
+    menu() {
+       return this.$store.state.menu.SideMenu
+    }
+  },
   methods: {
 
+  },
+  mounted() {
   }
 }
 </script>
@@ -20,6 +30,9 @@ export default {
 .sidebar{
   width: 100%;
   text-align: left;
+  .all{
+    width: 100%;
+  }
   .menu-one{
     width: 100%;
     box-sizing: border-box;

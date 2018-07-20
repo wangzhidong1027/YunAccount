@@ -10,9 +10,10 @@
         text-color="#b6d0f8"
         text-aline="'center"
          @select="handleSelect"
-        active-text-color="#ffffff">
-        <el-menu-item index="1">需求中心</el-menu-item>
-        <el-menu-item index="2" >企业中心</el-menu-item>
+        active-text-color="#ffffff"
+        :router="true">
+        <el-menu-item index="/main">需求中心</el-menu-item>
+        <el-menu-item index="/userifo" >企业中心</el-menu-item>
       </el-menu>
     </div>
     <div class="username">

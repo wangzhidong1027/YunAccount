@@ -1,12 +1,15 @@
+import Vue from 'vue'
 const demandType = {
-  status: {
+  state: {
     allType: {}
   },
-  mutations: {},
-  actions: {
-    getType () {
-      console.log(this)
+  mutations: {
+    getType (state,Obj) {
+      state.allType = Obj
     }
+  },
+  actions: {
+
   }
 }
 
