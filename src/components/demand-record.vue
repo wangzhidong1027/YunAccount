@@ -31,7 +31,18 @@
               <div class="detail" style="font-size: 14px">(发放金额：￥{{scope.row.money}}；服务费：￥{{scope.row.feemoney}})</div>
           </div>
         </el-table-column>
-        <el-table-column prop="serve" label="服务内容" ></el-table-column>
+          <el-table-column prop="serve" label="服务内容" >
+            <el-popover
+              slot-scope="scope"
+              placement="bottom-start"
+              width="200"
+              trigger="hover">
+              <div>
+                <p style="text-align: center" v-for="neediten in getchildetype(scope.row.needid,scope.row.needcatpath)">{{neediten}}</p>
+              </div>
+              <div slot="reference">{{(gettype(scope.row.needid))}}</div>
+            </el-popover>
+          </el-table-column>
         <el-table-column label="期望完成时间" ><div slot-scope="scope">{{scope.row.pacttime | data}}</div></el-table-column>
         <el-table-column label="状态">
            <div slot-scope="scope">
@@ -40,24 +51,25 @@
              <div v-if="scope.row.status==3">审核中</div>
              <div v-if="scope.row.status>=4 && scope.row.status<7">服务中</div>
              <!--<div><p style="color: #e02828">审核未通过</p><p style="color: #999999">请重新上传凭证</p></div>-->
+             <div v-if="scope.row.status==7">已完成</div>
            </div>
         </el-table-column>
         <el-table-column prop="pactno" label="合同编号" ></el-table-column>
-        <el-table-column label="操作" >
+        <el-table-column label="操作"  width="179px" >
           <div class="upload" slot-scope="scope" >
             <el-upload class="upload" :action="$GLOBAL.commonUpImgApi" v-if="scope.row.status==2" :on-success="upimg" :multiple='false' :limit="1">
                <div class="upimge"><button @click="UPloading(scope.row.id,scope.row.fid)">上传付款凭证</button></div>
             </el-upload>
              <div class="delorder" v-if="scope.row.status==1"><button @click="deleteOrder(scope.row.id,scope.row.fid)">删除</button></div>
              <!--<div class="upimge"><button>上传付款凭证</button></div>-->
-             <div class="confirm" v-if="new Date(scope.row.pacttime).toDateString() === nowDate && scope.row.status>=4 && scope.row.status<7 "><button @click='confirmOrder(scope.row.id,scope.row.fid)'>确认验收</button></div>
+             <div class="confirm" v-if="new Date(scope.row.pacttime)> nowDate && scope.row.status>=4 && scope.row.status<7 "><button @click='confirmOrder(scope.row.id,scope.row.fid)'>确认验收</button></div>
              <div class="lookimg" v-if="scope.row.status>=3 && scope.row.status<=7"><button @click="showimg(scope.row.imgurl)">查看付款凭证</button></div>
           </div>
         </el-table-column>
       </el-table>
       </div>
       <div class="page ">
-        <el-pagination  background layout="prev, pager, next, total, jumper" :total="count" @current-change="changepage" @prev-click="prevpage" @next-click="nextpage"></el-pagination>
+        <el-pagination  background layout="prev, pager, next, total, jumper" :total="count" @current-change="changepage"></el-pagination>
       </div>
     </div>
     <el-dialog  :visible.sync="dialogVisible" width="30%">
@@ -87,7 +99,8 @@ export default {
       pageNo: 1,
       tableData2: [],
       nowDate: '',
-      dialogVisible: false
+      dialogVisible: false,
+      showTypeData:[]
     }
   },
   computed: {
@@ -98,25 +111,54 @@ export default {
   filters: {
     data: function (value) {
       return value.slice(0,10)
-    }
+    },
   },
   created() {
     this.getorder()
   },
   methods: {
+    gettype(val) {
+      // var Aneedcatpath = needcatpath.split(',')
+      // var MYtype = {cat:'', needcatpath:[]}
+      var MYtype
+      for (var i in this.typedata){
+        if(this.typedata[i].catid == val ){
+            //  MYtype.cat = this.typedata[i].cat
+            // for (var k = 0; k < Aneedcatpath.length;  k++ ){
+            //   for (var j = 0; j <this.typedata[i].childList.length; j++ ){
+            //     if(this.typedata[i].childList[j].catpath == Aneedcatpath[k] ){
+            //       MYtype.needcatpath.push(this.typedata[i].childList[j].cat)
+            //       break
+            //     }
+            //   }
+            // }
+          return this.typedata[i].cat
+        }
+        // return MYtype
+     }
+    },
+    getchildetype(val,needcatpath){
+      var Aneedcatpath = needcatpath.split(',')
+      var MYtype =[]
+      for (var i in this.typedata){
+        if(this.typedata[i].catid == val ){
+            for (var k = 0; k < Aneedcatpath.length;  k++ ){
+              for (var j = 0; j <this.typedata[i].childList.length; j++ ){
+                if(this.typedata[i].childList[j].catpath == Aneedcatpath[k] ){
+                  MYtype.push(this.typedata[i].childList[j].cat)
+                  break
+                }
+              }
+            }
+        }
+        return MYtype
+     }
+    },
     /**
      *  @ 分页功能statr
      */
     changepage(currentchange){
       this.pageNo = currentchange
-      this.getorder()
-    },
-    prevpage(){
-      this.pageNo--
-      this.getorder()
-    },
-    nextpage(){
-      this.pageNo++
       this.getorder()
     },
      /**
@@ -137,7 +179,6 @@ export default {
         var result = JSON.parse(this.$base64.decode(res.data))
         if(result.code == 10000){
           this.tableData2 = result.data.info
-          console.log( this.tableData2)
           this.count = result.data.count
         }else{
           this.$message.error(result.info)
@@ -203,6 +244,10 @@ export default {
       this.pageNo = 1
       this.getorder()
     },
+    /**
+     *
+     * @ 删除订单
+     */
     deleteOrder(id,fid){
       var _this = this
       this.$confirm('此操作将删除该订单, 是否继续?', '提示', {
@@ -226,10 +271,7 @@ export default {
                   message: '删除成功!'
                 });
             }else{
-              _this.$message({
-                type: 'success',
-                message: result.info
-              });
+              _this.$message.error(result.info);
             }
           }).catch(error => {
             console.log(error)
@@ -243,7 +285,8 @@ export default {
     },
 
     // 确认需求
-    confirmOrder() {
+    confirmOrder(id,fid) {
+        var _this = this
        this.$confirm('<p>确定验收后，系统将给自由职业者打款！</br>一经确认不可撤销！</p>', '确定验收', {
          dangerouslyUseHTMLString: true,
           confirmButtonText: '确定',
@@ -251,26 +294,23 @@ export default {
           type: 'warning',
           center: true
         }).then(() => {
-          this.axios(
-            this.$GLOBAL.affirmOrderApi,
-            this.$qs.stringify({
-              agentNo: this.$GLOBAL.agent.agentNo,
+          _this.$axios.post(
+            _this.$GLOBAL.affirmOrderApi,
+            _this.$qs.stringify({
+              agentNo: _this.$GLOBAL.agent.agentNo,
               id: id,
               fid: fid
             })
           ).then(res => {
-            var result = JSON.parse(this,$base64.decode(res.data))
+            var result = JSON.parse(_this.$base64.decode(res.data))
             if(result.code == 10000){
-                this.getorder()
-               this.$message({
+                _this.getorder()
+               _this.$message({
                   type: 'success',
                   message: '验收成功!'
                 });
             }else{
-              this.$message({
-                type: 'success',
-                message: result.info
-              });
+              _this.$message.error( result.info);
             }
           })
         }).catch(() => {
@@ -286,7 +326,7 @@ export default {
     }
   },
   mounted(){
-    this.nowDate = new Date().toDateString()
+    this.nowDate = new Date()
 
   }
 }

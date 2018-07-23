@@ -2,8 +2,9 @@
 
 </template>
 <script>
-const baseApiURL = "/cloud-api"
-const baseBackApiURL = '/cloud'
+  ///cloud-api
+const baseApiURL = ""
+const baseBackApiURL = ''
 
 const commonUpImgApi = baseApiURL + '/toolcate/uploadFile'
 const loginApi = baseApiURL + '/companyInfo/companyLogin' // 001企业登录
@@ -16,11 +17,11 @@ const submitOrderAAPI = baseBackApiURL + '/rechargeNeed/release' //006 提交需
 const deleteOrderApi = baseBackApiURL + '/rechargeNeed/delete' // 007 订单删除
 const upPayImgApi = baseBackApiURL + '/rechargeNeed/voucher' // 008 上传付款凭证
 const affirmOrderApi = baseBackApiURL +  '/rechargeNeed/affirm' // 009 需求确认
-const getMerchInfoApi =  '/merch/getMerchantInfo' // 010 获取商户信息
+const getMerchInfoApi = baseApiURL + '/merch/getMerchantInfo' // 010 获取商户信息
 
 //代理配置
 const agent = {
-  agentNo: 'CY1531978803112635'
+  agentNo: 'CY1532075728024963'
 }
 export default {
   commonUpImgApi,

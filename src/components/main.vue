@@ -11,7 +11,9 @@
           <el-breadcrumb-item>发布需求</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
-      <router-view></router-view>
+      <!--<keep-alive>-->
+        <router-view></router-view>
+      <!--</keep-alive>-->
     </div>
   </div>
 </template>
@@ -30,9 +32,6 @@ export default {
     }
   },
   created(){
-    this.$axios.post(
-
-    )
   },
   computed: {
     showtbr() {

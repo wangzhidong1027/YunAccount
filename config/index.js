@@ -12,15 +12,15 @@ module.exports = {
     proxyTable: {
         "/cloud-api": {
         type: 'proxy',
-          target: 'http://10.10.18.17:8081/',
+          target: 'http://10.10.18.12:8088/',
           // headers : {
           //   'X-Real-IP' : '127.0.0.1:8080'
           // },
           changeOrigin: true,
         },
-        "/merch": {
+        "/**": {
         type: 'proxy',
-          target: 'http://10.10.18.17:8081/',
+          target: 'http://testapi.xinxiangfuwu.com/',
           // headers : {
           //   'X-Real-IP' : '127.0.0.1:8080'
           // },
