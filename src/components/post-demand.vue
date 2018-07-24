@@ -4,12 +4,12 @@
     <!--element-loading-spinner="el-icon-loading"-->
     <!--element-loading-background="rgba(255, 255, 255, 1)">-->
   <div id="post-demand">
-    <el-form ref="submitfrom">
+    <el-form ref="submitfrom" :model="submitfrom" :rules="rules">
       <p class="input-title">填写金额</p>
       <div class="money-box">
         <div class="input-box">
           <el-form-item prop="money">
-            <el-input v-model="submitfrom.money" placeholder="请输入金额" size="small "  >
+            <el-input v-model="submitfrom.money" placeholder="请输入金额" size="small "  maxlength="13">
               <b class="money_zh" slot="suffix">元</b>
             </el-input>
           </el-form-item>
@@ -89,31 +89,47 @@
             return (time.getTime() - Date.now()) < -3600000 * 24
           },
         },
-        // rules: {
-        //   money: [
-        //     { required: true, message: '需求金额不能为空', trigger: 'blur' }
-        //   ],
-        //   trye: [
-        //     { type: 'array', required: true, message: '请至少选择一个服务内容', trigger: 'change' }
-        //   ],
-        //   data: [
-        //     { required: true, message: '请选择期望完成时间', trigger: 'blur' }
-        //   ]
-        // },
+        rules: {
+          money: [
+            { required: true, message: '需求金额不能为空', trigger: 'change' },
+            { validator : (rule,value,callback) => {
+              if(/^\d+(\.\d{0,2})?$/.test(value)){
+                callback()
+              }else{
+                callback(new Error(""))
+              }}, message: '需求金额为格式不正确，例如123.45', trigger: 'change'}
+          ],
+          // trye: [
+          //   { type: 'array', required: true, message: '请至少选择一个服务内容', trigger: 'change' }
+          // ],
+          // data: [
+          //   { required: true, message: '请选择期望完成时间', trigger: 'blur' }
+          // ]
+        },
         // typedata: []
       }
     },
     computed: {
+      user: function() {
+        return this.$store.state.User.user
+      },
       feemoney: function () {
-        return this.submitfrom.money * 0.075
+        if(/^\d+(\.\d{0,2})?$/.test(this.submitfrom.money)){
+            return Math.ceil(this.submitfrom.money * this.user.rate * 100) / 100
+        }else{
+           return 0
+        }
       },
       realmoney: function () {
-         return this.submitfrom.money * 1.075
+        if(/^\d+(\.\d{0,2})?$/.test(this.submitfrom.money)){
+           return (this.submitfrom.money * 100 + this.feemoney * 100) / 100
+        }else{
+           return 0
+        }
       },
       typedata: function () {
         return this.$store.state.AllType.allType
-      }
-
+      },
     },
     methods: {
       /**
@@ -148,7 +164,7 @@
           background: 'rgba(255, 255, 255, 0)'
         });
         this.$axios.post(
-          this.$GLOBAL.submitOrderAAPI,
+          this.$GLOBAL.submitOrderAPI,
           this.$qs.stringify({
             needid: this.submitfrom.alltype,
             needcatpath: this.submitfrom.type.toString(),

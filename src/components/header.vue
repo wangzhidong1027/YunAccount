@@ -20,7 +20,7 @@
       <el-dropdown>
       <span class="el-dropdown-link">
         <i class="el-icon-location el-icon--left"></i>
-        中欣安泰集团<i class="el-icon-caret-bottom el-icon--right"></i>
+        {{name.name}}<i class="el-icon-caret-bottom el-icon--right"></i>
       </span>
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item @click.native="dialogVisible=true">修改密码</el-dropdown-item>
@@ -94,6 +94,11 @@ export default {
       }
     }
   },
+  computed: {
+     name: function() {
+        return this.$store.state.User.user
+      }
+  },
   methods: {
     handleSelect() {
       console.log()
@@ -117,6 +122,10 @@ export default {
                   type: 'success'
                 })
                 this.dialogVisible = false
+                 sessionStorage.clear();
+                 this.$router.push({
+                    path:'./login',
+                  })
               }else{
                 this.$message.error(result.info)
               }

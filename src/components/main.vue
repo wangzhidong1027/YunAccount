@@ -32,6 +32,24 @@ export default {
     }
   },
   created(){
+      this.$axios.post(
+        this.$GLOBAL.getMerchNoApi,
+        this.$qs.stringify({})
+      ).then(res => {
+        var result = JSON.parse(this.$base64.decode(res.data))
+        if(result.code == 10000){
+           this.$store.commit('getUser',result.data)
+        }else{
+            sessionStorage.clear();
+           this.$message.error(result.info)
+           this.$router.push({
+              path:'./login',
+            })
+        }
+      }).catch(error => {
+        console.log()
+      })
+
   },
   computed: {
     showtbr() {

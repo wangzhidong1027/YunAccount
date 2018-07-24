@@ -10,30 +10,30 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-        "/cloud-api": {
-        type: 'proxy',
-          target: 'http://10.10.18.12:8088/',
-          // headers : {
-          //   'X-Real-IP' : '127.0.0.1:8080'
-          // },
-          changeOrigin: true,
-        },
-        "/**": {
-        type: 'proxy',
-          target: 'http://testapi.xinxiangfuwu.com/',
-          // headers : {
-          //   'X-Real-IP' : '127.0.0.1:8080'
-          // },
-          changeOrigin: true,
-        },
-       "/cloud": {
-         type: 'proxy',
-         target: 'http://10.10.18.38:8080/',
-         // headers : {
-         //   'X-Real-IP' : '127.0.0.1:8080'
-         // },
-         changeOrigin: true,
-       },
+       //  "/cloud-api": {
+       //  type: 'proxy',
+       //    target: 'http://10.10.18.17:8081/',
+       //    // headers : {
+       //    //   'X-Real-IP' : '127.0.0.1:8080'
+       //    // },
+       //    changeOrigin: true,
+       //  },
+       //  "/**": {
+       //  type: 'proxy',
+       //    target: 'http://testapi.xinxiangfuwu.com/',
+       //    // headers : {
+       //    //   'X-Real-IP' : '127.0.0.1:8080'
+       //    // },
+       //    changeOrigin: true,
+       //  },
+       // "/cloud": {
+       //   type: 'proxy',
+       //   target: 'http://10.10.18.38:8080/',
+       //   // headers : {
+       //   //   'X-Real-IP' : '127.0.0.1:8080'
+       //   // },
+       //   changeOrigin: true,
+       // },
     },
 
     // Various Dev Server settings

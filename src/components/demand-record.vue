@@ -46,23 +46,24 @@
         <el-table-column label="期望完成时间" ><div slot-scope="scope">{{scope.row.pacttime | data}}</div></el-table-column>
         <el-table-column label="状态">
            <div slot-scope="scope">
+             <div v-if="scope.row.status==0">已取消</div>
              <div v-if="scope.row.status==1">需求已提交</div>
              <div v-if="scope.row.status==2">待付款</div>
              <div v-if="scope.row.status==3">审核中</div>
              <div v-if="scope.row.status>=4 && scope.row.status<7">服务中</div>
-             <!--<div><p style="color: #e02828">审核未通过</p><p style="color: #999999">请重新上传凭证</p></div>-->
+             <div v-if="scope.row.status==8"><p style="color: #e02828">审核未通过</p><p style="color: #999999">请重新上传凭证</p></div>
              <div v-if="scope.row.status==7">已完成</div>
            </div>
         </el-table-column>
         <el-table-column prop="pactno" label="合同编号" ></el-table-column>
         <el-table-column label="操作"  width="179px" >
           <div class="upload" slot-scope="scope" >
-            <el-upload class="upload" :action="$GLOBAL.commonUpImgApi" v-if="scope.row.status==2" :on-success="upimg" :multiple='false' :limit="1">
+            <el-upload class="upload" :action="$GLOBAL.commonUpImgApi" v-if="scope.row.status==2 || scope.row.status==8 " :on-success="upimg" :multiple='false' :limit="1">
                <div class="upimge"><button @click="UPloading(scope.row.id,scope.row.fid)">上传付款凭证</button></div>
             </el-upload>
              <div class="delorder" v-if="scope.row.status==1"><button @click="deleteOrder(scope.row.id,scope.row.fid)">删除</button></div>
              <!--<div class="upimge"><button>上传付款凭证</button></div>-->
-             <div class="confirm" v-if="new Date(scope.row.pacttime)> nowDate && scope.row.status>=4 && scope.row.status<7 "><button @click='confirmOrder(scope.row.id,scope.row.fid)'>确认验收</button></div>
+             <div class="confirm" v-if="new Date(scope.row.pacttime) < nowDate && scope.row.status>=4 && scope.row.status<7  && scope.row.pactstatus ==1"><button @click='confirmOrder(scope.row.id,scope.row.fid)'>确认验收</button></div>
              <div class="lookimg" v-if="scope.row.status>=3 && scope.row.status<=7"><button @click="showimg(scope.row.imgurl)">查看付款凭证</button></div>
           </div>
         </el-table-column>

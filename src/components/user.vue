@@ -4,7 +4,7 @@
 <!---------------------基本信息star--------------------->
       <h4>基本信息</h4>
       <el-form-item label="商户平台ID：" label-width="180px" required>
-        <el-col :span="8"><el-input :disabled="true" :placeholder="info.merch_no"></el-input></el-col>
+        <el-col :span="8"><el-input :disabled="true" :placeholder="info.merchNo"></el-input></el-col>
       </el-form-item>
       <el-form-item label="企业名称：" label-width="180px" required>
         <el-col :span="8"><el-input :disabled="true" :placeholder="info.name"></el-input></el-col>
@@ -18,6 +18,10 @@
       <el-form-item label="营业执照影印件：" label-width="180px" required>
         <el-col :span="8"><div class="register-img"><img :src="info.bslicense" alt=""></div></el-col>
       </el-form-item>
+       <el-form-item label="纳税人类型：" label-width="180px" required>
+          <el-radio v-model="info.taxpayertype" label="1" :disabled="true">一般纳税人</el-radio>
+          <el-radio v-model="info.taxpayertype" label="2" :disabled="true">小规模纳税人</el-radio>
+       </el-form-item>
       <el-form-item label="纳税人识别号：" label-width="180px" required>
         <el-col :span="8"><el-input :disabled="true" :placeholder="info.tin"></el-input></el-col>
       </el-form-item>
@@ -35,31 +39,31 @@
 <!---------------------联系信息star--------------------->
       <h4>联系信息</h4>
       <el-form-item label="联系人姓名：" label-width="180px" required>
-        <el-col :span="8"><el-input :disabled="true":placeholder="info.phonename"></el-input></el-col>
+        <el-col :span="8"><el-input :disabled="true":placeholder="info.linkname"></el-input></el-col>
       </el-form-item>
 
       <el-form-item label="联系人手机号：" label-width="180px" required>
-        <el-col :span="8"><el-input :disabled="true" :placeholder="info.phone"></el-input></el-col>
+        <el-col :span="8"><el-input :disabled="true" :placeholder="info.linkphone"></el-input></el-col>
       </el-form-item>
 
        <el-form-item label="联系人邮箱：" label-width="180px" required>
-        <el-col :span="8"><el-input :disabled="true" :placeholder="info.phoneemail"></el-input></el-col>
+        <el-col :span="8"><el-input :disabled="true" :placeholder="info.linkemail"></el-input></el-col>
       </el-form-item>
 
        <el-form-item label="联系地址：" label-width="180px" required>
-        <el-col :span="8"><el-input :disabled="true" :placeholder="info.address_person"></el-input></el-col>
+        <el-col :span="8"><el-input :disabled="true" :placeholder="info.province_cn + info.city_cn + info.linkaddress"></el-input></el-col>
       </el-form-item>
       <!---------------------对公账户star--------------------->
       <h4>对公账户</h4>
 
        <el-form-item label="开户名称：" label-width="180px" required>
-        <el-col :span="8"> <el-input :disabled="true" :placeholder="info.account_name"></el-input></el-col>
+        <el-col :span="8"> <el-input :disabled="true" :placeholder="info.bankname"></el-input></el-col>
       </el-form-item>
        <el-form-item label="对公账户：" label-width="180px" required>
         <el-col :span="8"><el-input :disabled="true" :placeholder="info.bankno"></el-input></el-col>
       </el-form-item>
        <el-form-item label="开户银行：" label-width="180px" required>
-        <el-col :span="8"><el-input :disabled="true" :placeholder="info.bankname"></el-input></el-col>
+        <el-col :span="8"><el-input :disabled="true" :placeholder="info.banksubname"></el-input></el-col>
       </el-form-item>
       <!---------------------对公账户end--------------------->
       <!---------------------客户支持star--------------------->
@@ -68,11 +72,11 @@
          <el-col :span="8"> <el-input :disabled="true"  :placeholder="info.serviclinkuser"></el-input></el-col>
       </el-form-item>
        <el-form-item label="手机号：" label-width="180px" required>
-        <el-col :span="8"><el-input :disabled="true" :placeholder="info.linkphone"></el-input></el-col>
+        <el-col :span="8"><el-input :disabled="true" :placeholder="info.phone"></el-input></el-col>
       </el-form-item>
 
        <el-form-item label="邮箱：" label-width="180px" required>
-        <el-col :span="8"><el-input :disabled="true" :placeholder="info.linkemail"></el-input></el-col>
+        <el-col :span="8"><el-input :disabled="true" :placeholder="info.email"></el-input></el-col>
       </el-form-item>
       <!---------------------客户支持end--------------------->
     </el-form>
@@ -84,22 +88,25 @@
     name: 'User',
     data() {
       return {
-        info: {}
       }
     },
+    computed: {
+     info: function () {
+       return this.$store.state.User.user
+     },
+    },
     created() {
-      this.$axios.post(
-        this.$GLOBAL.getMerchInfoApi,
-        this.$qs.stringify({})
-      ).then(res => {
-        var result = JSON.parse(this.$base64.decode(res.data))
-        console.log(result)
-        if(result.code == 10000){
-            this.info=result.data
-        }
-      }).catch(error => {
-        console.log(error)
-      })
+      // this.$axios.post(
+      //   this.$GLOBAL.getMerchInfoApi,
+      //   this.$qs.stringify({})
+      // ).then(res => {
+      //   var result = JSON.parse(this.$base64.decode(res.data))
+      //   if(result.code == 10000){
+      //       this.info=result.data
+      //   }
+      // }).catch(error => {
+      //   console.log(error)
+      // })
     },
     mounted() {
       var menu =[

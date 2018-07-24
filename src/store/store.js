@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 
 import AllType from './modules/demand-type'
 import Menu from './modules/menu'
+import User from './modules/user'
 Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
@@ -16,7 +17,8 @@ const store = new Vuex.Store({
   },
   modules: {
     AllType: AllType,
-    menu: Menu
+    menu: Menu,
+    User: User
   }
 })
 export default store

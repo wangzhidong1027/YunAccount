@@ -11,18 +11,26 @@ import { Base64 } from 'js-base64';
 import GLOBAL from './components/global/global.vue'
 import  ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css';
-
 Vue.config.productionTip = false
 
 Vue.use(ElementUI);
 
 const HTTP_request = Axios.create({
-    timeout:20000  //request timeout
+    timeout:20000,  //request timeout
 })
+ // HTTP_request.defaults.withCredentials = true
+// HTTP_request.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
 //添加请求拦截器
 HTTP_request.interceptors.request.use(function (config) {
   //请求发送前
+    config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
     config.headers['token'] = sessionStorage.getItem('token')
+Object.assign(config.headers, { 'token': '222'});
+//     if( config.method === 'post'){
+//       config.data = qs.stringify(config.data)
+//     }
+
+    // config.headers['Content-Type']='application/json;charset=UTF-8'
     return config
 })
 //HTTP request响应拦截器
@@ -37,16 +45,16 @@ HTTP_request.interceptors.response.use(
                     })
       }
     }
-    return response
+   return response;
   },
   error => {
     if(error.response){
-      // sessionStorage.clear();
-      // router.replace({
-      //   path:'./505'
-      // });
+      sessionStorage.clear();
+      router.replace({
+        path:'./login'
+      });
     }
-    return promise.reject(error.response.data)
+     return Promise.reject(error.response.data)
   })
 
 Vue.prototype.$axios = HTTP_request;
