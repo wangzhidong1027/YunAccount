@@ -48,6 +48,7 @@ export default {
               password: this.$base64.encode(this.loginFrom.password)
             })
           ).then(res => {
+            console.log(res)
             var result = JSON.parse(this.$base64.decode(res.data))
             if(result.code == 10000){
               this.$message({

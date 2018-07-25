@@ -19,20 +19,37 @@ const HTTP_request = Axios.create({
     timeout:20000,  //request timeout
 })
  // HTTP_request.defaults.withCredentials = true
-// HTTP_request.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+
 //添加请求拦截器
-HTTP_request.interceptors.request.use(function (config) {
+HTTP_request.interceptors.request.use(
+  config => {
   //请求发送前
     config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
     config.headers['token'] = sessionStorage.getItem('token')
-Object.assign(config.headers, { 'token': '222'});
-//     if( config.method === 'post'){
-//       config.data = qs.stringify(config.data)
-//     }
+  //   if(config.method=='post') {
+  //     config.data = {
+  //       ...config.data,
+  //     }
+  //   }
+  //     if(token){
+  //       if(config.data){
+  //         config.data=config.data+'&token='+token
+  //       }else{
+  //         config.data = 'token='+token
+  //       }
+  //     }
+        // config.data =qs.stringify(config.data)
+        // config.headers= {
+        //   'Content-Type' : 'application/x-www-form-urlencoded',
+        // }
 
-    // config.headers['Content-Type']='application/json;charset=UTF-8'
-    return config
-})
+        // if(token){
+        //   config.data = qs.stringify(config.data)
+        //
+        // }
+        return config
+
+    })
 //HTTP request响应拦截器
 HTTP_request.interceptors.response.use(
   response=>{

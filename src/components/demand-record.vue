@@ -2,7 +2,7 @@
   <div class="demone-record" >
     <div class="top">
       <div>
-        <h4>企业名称公司</h4>
+        <h4>{{name.name}}</h4>
         <div class="link">
          <router-link to="/main/postdemand">发布需求</router-link>
         </div>
@@ -70,7 +70,7 @@
       </el-table>
       </div>
       <div class="page ">
-        <el-pagination  background layout="prev, pager, next, total, jumper" :total="count" @current-change="changepage"></el-pagination>
+        <el-pagination  background layout="prev, pager, next, total, jumper" :total="count" @current-change="changepage" :page-size="8"></el-pagination>
       </div>
     </div>
     <el-dialog  :visible.sync="dialogVisible" width="30%">
@@ -107,6 +107,9 @@ export default {
   computed: {
      typedata: function() {
         return this.$store.state.AllType.allType
+      },
+      name: function() {
+        return this.$store.state.User.user
       }
   },
   filters: {

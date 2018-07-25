@@ -3,8 +3,10 @@
 </template>
 <script>
   ///cloud-api
-  //http://testapi.xinxiangfuwu.com
-const baseApiURL = "http://10.10.18.17:8081/cloud-api"
+  // http://testapi.xinxiangfuwu.com
+  const baseApiURL = "http://testapi.xinxiangfuwu.com"
+//
+// const baseApiURL = "http://10.10.18.17:8081/cloud-api"
 const baseBackApiURL = ''
 
 const commonUpImgApi = baseApiURL + '/toolcate/uploadFile'
@@ -23,7 +25,7 @@ const getMerchInfoApi = baseApiURL + '/merch/getMerchantInfo' // 010 获取商�
 
 //代理配置
 const agent = {
-  agentNo: 'CY1532075728024963'
+  agentNo: 'CY1532500042351613'
 }
 export default {
   commonUpImgApi,
