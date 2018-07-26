@@ -8,7 +8,7 @@ const Menu = {
         child: [{
             title: '我的需求',
             path: '',
-            icon: '',
+            icon: 'iconfont icon-lianjie',
           }]
       }
     ]

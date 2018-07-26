@@ -41,6 +41,12 @@ export default {
     login(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          const loading = this.$loading({
+          lock: true,
+          text: '登陆中',
+          spinner: 'el-icon-loading',
+          background: 'rgba(255, 255, 255, 0)'
+        });
           this.$axios.post(
             this.$GLOBAL.loginApi,
             this.$qs.stringify({
@@ -48,7 +54,6 @@ export default {
               password: this.$base64.encode(this.loginFrom.password)
             })
           ).then(res => {
-            console.log(res)
             var result = JSON.parse(this.$base64.decode(res.data))
             if(result.code == 10000){
               this.$message({
@@ -57,15 +62,17 @@ export default {
               });
               sessionStorage.setItem('token',result.data.token)
               setTimeout(() => {
+                loading.close();
                 this.$router.push({
                   path: './main/demandrecord'
                 })
               }, 3000);
             }else{
+               loading.close()
               this.$message.error(result.info)
             }
           }).catch(error => {
-
+            loading.close();
           })
         } else {
           return false;

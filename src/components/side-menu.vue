@@ -3,7 +3,7 @@
     <div class="all" v-for="item in menu">
        <div class="menu-one">{{item.title}}</div>
         <ul>
-          <li v-for="childmenu in item.child"><i class=" el-icon--left" :class="childmenu.icon"></i>{{childmenu.title}}</li>
+          <li v-for="childmenu in item.child"><i :class="childmenu.icon"></i> {{ childmenu.title}}</li>
         </ul>
     </div>
 

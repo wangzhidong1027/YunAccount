@@ -48,22 +48,22 @@
        <p class="input-title">汇款信息</p>
       <div class="remittance-info">
         <div class="info-item">
-          <span>预期付款账户：</span><b>XXXXX公司</b>
+          <span>预期付款账户：</span><b>欣享科技服务有限公司 </b>
         </div>
         <div class="info-item">
-          <span>账户名称：</span><b>XXXXX公司</b>
+          <span>账户名称：</span><b>欣享科技服务有限公司</b>
         </div>
         <div class="info-item">
-          <span>开户银行：</span><b>XXXXX公司</b>
+          <span>开户银行：</span><b>中国工商银行西宁城北支行</b>
         </div>
         <div class="info-item">
-          <span>银行账户：</span><b>54545454544112</b>
+          <span>银行账户：</span><b>2806046819100022610</b>
         </div>
       </div>
     </div>
     <div class="solid-line"></div>
     <div class="hint">
-       <p class="input-title">温馨提示：<span>请线下汇款，汇款时间在工作日9:00~16:30之间预计2小时内到账，其它时间汇款预计下个工作日内到账，请注意查收到</span></p>
+       <p class="input-title">温馨提示：<span>请线下汇款，汇款时间在工作日9:00~16:30之间预计2小时内到账，其它时间汇款预计下个工作日内到账，请注意查收</span></p>
     </div>
   </el-form>
     <div class="btn-box">
@@ -178,16 +178,17 @@
         ).then(res => {
           var result = JSON.parse(this.$base64.decode(res.data))
           if(result.code == 10000){
-             this.$message({
-                message: '需求发布成功',
-                type: 'success'
-              });
-              loading.close();
-              setTimeout(() => {
+            loading.close();
+            this.$alert('<div><p class="el-icon-success" style="font-size: 70px; color:#67c23a;line-height: 100px"></p><p>运营人员将尽快和你联系</p></div>', '提交成功', {
+              confirmButtonText: '我知道了',
+              center: true,
+              dangerouslyUseHTMLString: true,
+              callback: action => {
                 this.$router.push({
-                  path: '/main/demandrecord'
+                   path: '/main/demandrecord'
                 })
-              }, 3000);
+              }
+            });
           }else{
              loading.close();
              this.$message.error(result.info);
@@ -212,6 +213,7 @@
       }
     },
     created() {
+
       this.$store.commit('isshow',true)
       // this.$axios.post(
       //  this.$GLOBAL.getAllTypeApi,

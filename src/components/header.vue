@@ -11,15 +11,16 @@
         text-aline="'center"
          @select="handleSelect"
         active-text-color="#ffffff"
+        :default-active="defaultdata"
         :router="true">
-        <el-menu-item index="/main">需求中心</el-menu-item>
+        <el-menu-item index="/main/demandrecord">需求中心</el-menu-item>
         <el-menu-item index="/userifo" >企业中心</el-menu-item>
       </el-menu>
     </div>
     <div class="username">
       <el-dropdown>
       <span class="el-dropdown-link">
-        <i class="el-icon-location el-icon--left"></i>
+        <i class="iconfont icon-webicon07" style="font-size: 20px;font-weight: bold"></i>
         {{name.name}}<i class="el-icon-caret-bottom el-icon--right"></i>
       </span>
       <el-dropdown-menu slot="dropdown">
@@ -59,6 +60,7 @@ export default {
   name: 'MyHeader',
   data() {
     return {
+      defaultdata: '',
       dialogVisible: false,
       resetpasseord: {
         originPwd: '',
@@ -157,6 +159,10 @@ export default {
 
       })
     }
+  },
+  created(){
+    this.defaultdata =this.$route.path
+    console.log(this.defaultdata)
   }
 }
 </script>

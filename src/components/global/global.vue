@@ -2,9 +2,17 @@
 
 </template>
 <script>
-  ///cloud-api
-  // http://testapi.xinxiangfuwu.com
-  const baseApiURL = "http://testapi.xinxiangfuwu.com"
+  //代理配置  正式
+// const agent = {
+//   agentNo: 'CY1532592266116726'
+// }
+//代理配置  测试
+const agent = {
+  agentNo: 'CY1532500042351613'
+}
+
+const baseApiURL = "http://testapi.xinxiangfuwu.com"
+// const baseApiURL = "https://api.xinxiangfuwu.com"
 //
 // const baseApiURL = "http://10.10.18.17:8081/cloud-api"
 const baseBackApiURL = ''
@@ -23,10 +31,7 @@ const upPayImgApi = baseApiURL + '/rechargeNeed/voucher' // 008 上传付款凭�
 const affirmOrderApi = baseApiURL +  '/rechargeNeed/affirm' // 009 需求确认
 const getMerchInfoApi = baseApiURL + '/merch/getMerchantInfo' // 010 获取商户信息
 
-//代理配置
-const agent = {
-  agentNo: 'CY1532500042351613'
-}
+
 export default {
   commonUpImgApi,
   agent,

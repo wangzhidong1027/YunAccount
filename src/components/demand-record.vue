@@ -52,7 +52,7 @@
              <div v-if="scope.row.status==3">审核中</div>
              <div v-if="scope.row.status>=4 && scope.row.status<7">服务中</div>
              <div v-if="scope.row.status==8"><p style="color: #e02828">审核未通过</p><p style="color: #999999">请重新上传凭证</p></div>
-             <div v-if="scope.row.status==7">已完成</div>
+             <div v-if="scope.row.status==7" style="color:#67c23a">已完成</div>
            </div>
         </el-table-column>
         <el-table-column prop="pactno" label="合同编号" ></el-table-column>
@@ -63,7 +63,7 @@
             </el-upload>
              <div class="delorder" v-if="scope.row.status==1"><button @click="deleteOrder(scope.row.id,scope.row.fid)">删除</button></div>
              <!--<div class="upimge"><button>上传付款凭证</button></div>-->
-             <div class="confirm" v-if="new Date(scope.row.pacttime) < nowDate && scope.row.status>=4 && scope.row.status<7  && scope.row.pactstatus ==1"><button @click='confirmOrder(scope.row.id,scope.row.fid)'>确认验收</button></div>
+             <div class="confirmbtn" v-if="istrue(scope.row.pacttime)&& scope.row.status>=4 && scope.row.status<7  && scope.row.pactstatus ==1"><button @click='confirmOrder(scope.row.id,scope.row.fid)'>确认验收</button></div>
              <div class="lookimg" v-if="scope.row.status>=3 && scope.row.status<=7"><button @click="showimg(scope.row.imgurl)">查看付款凭证</button></div>
           </div>
         </el-table-column>
@@ -121,10 +121,22 @@ export default {
     this.getorder()
   },
   methods: {
+    istrue(val ){
+      var pacttime = new Date(val)
+      if(pacttime == 'Invalid Date'){
+        var value = val.replace(/-/g,'/')
+        pacttime= new Date(value)
+      }
+      if( pacttime< this.nowDate) {
+        return true
+      }else{
+        return false
+      }
+    },
     gettype(val) {
       // var Aneedcatpath = needcatpath.split(',')
       // var MYtype = {cat:'', needcatpath:[]}
-      var MYtype
+      // var MYtype
       for (var i in this.typedata){
         if(this.typedata[i].catid == val ){
             //  MYtype.cat = this.typedata[i].cat
@@ -136,6 +148,7 @@ export default {
             //     }
             //   }
             // }
+
           return this.typedata[i].cat
         }
         // return MYtype
@@ -146,7 +159,7 @@ export default {
       var MYtype =[]
       for (var i in this.typedata){
         if(this.typedata[i].catid == val ){
-            for (var k = 0; k < Aneedcatpath.length;  k++ ){
+          for (var k = 0; k < Aneedcatpath.length;  k++ ){
               for (var j = 0; j <this.typedata[i].childList.length; j++ ){
                 if(this.typedata[i].childList[j].catpath == Aneedcatpath[k] ){
                   MYtype.push(this.typedata[i].childList[j].cat)
@@ -154,8 +167,8 @@ export default {
                 }
               }
             }
+          return MYtype
         }
-        return MYtype
      }
     },
     /**
@@ -331,7 +344,6 @@ export default {
   },
   mounted(){
     this.nowDate = new Date()
-
   }
 }
 </script>
@@ -469,7 +481,7 @@ export default {
          width: 110px;
        }
      }
-      .confirm{
+      .confirmbtn{
        button{
          border:none;
          background-color: #418bfa;

@@ -13,7 +13,9 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "babel-polyfill": "^6.26.0",
     "element-ui": "^2.4.0",
+    "es6-promise": "^4.2.4",
     "js-base64": "^2.4.6",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",

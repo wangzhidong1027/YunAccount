@@ -5,6 +5,8 @@ import App from './App'
 import router from './router'
 import store from './store/store';
 
+import 'babel-polyfill'
+import 'es6-promise/auto'
 import Axios from 'axios'
 import qs from 'qs'
 import { Base64 } from 'js-base64';
