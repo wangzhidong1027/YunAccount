@@ -63,7 +63,7 @@
     </div>
     <div class="solid-line"></div>
     <div class="hint">
-       <p class="input-title">温馨提示：<span>请线下汇款，汇款时间在工作日9:00~16:30之间预计2小时内到账，其它时间汇款预计下个工作日内到账，请注意查收</span></p>
+       <p class="input-title">温馨提示：<span>请线下汇款，汇款时间在工作日9:00~16:30之间预计2小时内到账，其它时间汇款预计下个工作日内到账。</span></p>
     </div>
   </el-form>
     <div class="btn-box">
@@ -115,7 +115,7 @@
       },
       feemoney: function () {
         if(/^\d+(\.\d{0,2})?$/.test(this.submitfrom.money)){
-            return Math.ceil(this.submitfrom.money * this.user.rate * 100) / 100
+            return Math.ceil((this.submitfrom.money*100) * (this.user.rate * 1000)) / 100
         }else{
            return 0
         }
