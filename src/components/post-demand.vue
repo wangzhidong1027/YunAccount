@@ -115,7 +115,7 @@
       },
       feemoney: function () {
         if(/^\d+(\.\d{0,2})?$/.test(this.submitfrom.money)){
-            return Math.ceil((this.submitfrom.money*100) * (this.user.rate * 1000)) / 100
+            return (Math.ceil((this.submitfrom.money*100) * (this.user.rate * 1000)/1000)  + Math.ceil(this.submitfrom.money*100 * 7/100))/100
         }else{
            return 0
         }

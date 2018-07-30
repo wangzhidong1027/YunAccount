@@ -2,7 +2,7 @@
 
 </template>
 <script>
-  //代理配置  正式
+  // 代理配置  正式
 // const agent = {
 //   agentNo: 'CY1532592266116726'
 // }
